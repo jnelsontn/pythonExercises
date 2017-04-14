@@ -4,7 +4,8 @@ import sys
 class Mary(object):
 
 	def __init__(self):
-		self.messages = list()
+		self.messages = dict()
+		self.mary = list()
 
 		try:
 			self.messages = self.deserialize()
@@ -21,17 +22,19 @@ class Mary(object):
 				self.messages = pickle.load(f)
 		except EOFError:
 			pass
-
 		return self.messages
 
-	def list_messages(self):
-		for key, note in enumerate(self.messages):
-			print(str(key) + " : " + str(note))
+	def run(self):
+		try:
+			self.mary = self.messages['Mary']
+		except KeyError:
+			self.messages['Mary'] = list()
+			self.mary = self.messages['Mary']
 
-	def runme(self):
-		self.messages.append(sys.argv[1:])
+		self.mary.append(sys.argv[1:])
+		self.messages['Mary'] = self.mary
 		self.serialize()
-		self.list_messages()
+		print(self.messages)
 		
 mary = Mary()
-mary.runme()
+mary.run()

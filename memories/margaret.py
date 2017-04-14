@@ -4,7 +4,8 @@ import sys
 class Margaret(object):
 
 	def __init__(self):
-		self.messages = list()
+		self.messages = dict()
+		self.margaret = list()
 
 		try:
 			self.messages = self.deserialize()
@@ -21,17 +22,19 @@ class Margaret(object):
 				self.messages = pickle.load(f)
 		except EOFError:
 			pass
-
 		return self.messages
 
-	def list_messages(self):
-		for key, note in enumerate(self.messages):
-			print(str(key) + " : " + str(note))
+	def run(self):
+		try:
+			self.margaret = self.messages['Margaret']
+		except KeyError:
+			self.messages['Margaret'] = list()
+			self.margaret = self.messages['Margaret']
 
-	def runme(self):
-		self.messages.append(sys.argv[1:])
+		self.margaret.append(sys.argv[1:])
+		self.messages['Margaret'] = self.margaret
 		self.serialize()
-		self.list_messages()
+		print(self.messages)
 		
 margaret = Margaret()
-margaret.runme()
+margaret.run()
