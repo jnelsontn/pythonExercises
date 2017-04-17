@@ -1,22 +1,17 @@
-## All Departments Inherit from Department
+import random
+
 class Department(object):
 
-	def __init__(self, name, manager, employees):
+	def __init__(self, name, manager):
 		self.name = name
 		self.manager = manager
-		self.employees = employees
+		self.employees = set()
 
 	def get_name(self):
 		return self.name
 
 	def get_manager(self):
 		return self.manager
-
-	def get_employees(self):
-		return self.employees
-
-	def add_employees(self, x):
-		self.employees += x
 
 	def override_me(self):
 		print('Over-Ride Me Please')
@@ -26,12 +21,31 @@ class Department(object):
 		self.budget = 1000
 		return self.budget
 
+	# for exercise 5
+	def add_employee(self, employee):
+		self.employees.add(employee)
+
+	def remove_employee(self, employee):
+		self.employees.remove(employee)
+
+	def get_employees(self):
+		print('-------------------------')
+		print('Department Name:', self.name )
+		print('Manager: ', self.get_manager() )
+		print('Budget: ', self.get_budget() )
+		print(' ')
+		for x in self.employees:
+			print('Employee: ', x.firstname, x.lastname)
+			print('Hours Per Week: ', x.hours_per_week)
+			print('Location: ', x.location)
+			print(' ')
+
 ## Information Systems Class
 class Information_Systems_Dept(Department):
 
 	def __init__(self):
 		# no need for super as we're inheriting from one class
-		Department.__init__(self, 'Information Systems', 'Joe', 25)
+		Department.__init__(self, 'Information Systems', 'Joe')
 		super(Information_Systems_Dept, self).get_budget()
 		self.work_from_home = True
 
@@ -46,7 +60,7 @@ class Information_Systems_Dept(Department):
 class Human_Resources(Department):
 
 	def __init__(self):
-		Department.__init__(self, 'Human Resources', 'Bob', 10)
+		Department.__init__(self, 'Human Resources', 'Bob')
 		super(Human_Resources, self).get_budget()
 		self.employee_list = set()
 		self.isHated = True
@@ -71,7 +85,7 @@ class Human_Resources(Department):
 class Marketing(Department):
 
 	def __init__(self):
-		Department.__init__(self, 'Marketing', 'Jane', 6)
+		Department.__init__(self, 'Marketing', 'Jane')
 		super(Marketing, self).get_budget()
 
 	def get_budget(self):
@@ -81,47 +95,64 @@ class Marketing(Department):
 	def override_me(self):
 		print('I am over-ridden in Marketing but now in HR')
 
+
 class Employee(object):
 
 	def __init__(self, first_name, last_name):
 		self.firstname = first_name
 		self.lastname = last_name
 
-	def get_name(self):
-		print(self.firstname + ' ' + self.lastname)
+	def eat(self, food=None, companions=None):
+		restaraunts = [ 'Outback', 'Burger King', 'McDonalds', '3 Crow', 'Melrose', 'Applebees', 'KFC', 'Panera']
+		random_restaraunt = random.choice(restaraunts)
 
-Joe = Employee('Bob', 'Smithers')
-Joe.get_name()
+		if food is None and companions is None:
+			print('{} {} ate at {}'.format(self.firstname, self.lastname, random_restaraunt))
+		elif food is not None and companions is None:
+			print('{} {} ate a {} at the Office'.format(self.firstname, self.lastname, food))
+		elif food is None and companions is not None:
+			print('{} {} ate at {} with {}'.format(self.firstname, self.lastname, random_restaraunt, ', '.join(companions)))
+		elif food is not None and companions is not None:
+			print('{} {} ate at {} and ordered {} with {}'.format(self.firstname, self.lastname, random_restaraunt, food, ', '.join(companions)))
 
+class FullTime(object):
 
+	def __init__(self):
+		self.hours_per_week = 40
 
-# Initialize Some Instances of Our Classes
-IS = Information_Systems_Dept()
-print('Department Name: ' + IS.get_name())
-print('Work From Home: ' + str(IS.WorkFromHome()))
-print('Manager: ', IS.get_manager())
-print('Employees: {}'.format(IS.get_employees()))
-print('Budget Is: ' + str(IS.get_budget()) )
+class PartTime(object):
 
-print(' ')
+	def __init__(self):
+		self.hours_per_week = 24
 
-HR = Human_Resources()
-print('Department Name: ' + HR.get_name())
-print('Budget is: ' + str(HR.get_budget()) )
-print('Are they Hated? ', HR.DeptHated())
-HR.add_employee_name('Parker')
-HR.add_employee_name('Slimer')
-HR.add_employee_name('Calbert')
-print('List of Employee Names Added: ' + str(HR.get_employee_list()))
-HR.override_me()
+class LocationA(object):
 
-print(' ')
+	def __init__(self):
+		self.location = 'Annex'
 
-MRK = Marketing()
-print('Department Name: ' + MRK.get_name())
-print('Budget is: ' + str(MRK.get_budget()) )
-MRK.override_me()
+class LocationB(object):
 
+	def __init__(self):
+		self.location = 'Sunnyvale Office'
 
+class IS_Employee(Employee, FullTime, LocationA):
 
+	def __init__(self, first_name, last_name):
+		Employee.__init__(self, first_name, last_name)
+		FullTime.__init__(self)
+		LocationA.__init__(self)
+
+class HR_Employee(Employee, PartTime, LocationB):
+
+	def __init__(self, first_name, last_name):
+		Employee.__init__(self, first_name, last_name)
+		PartTime.__init__(self)
+		LocationB.__init__(self)
+
+class MRK_Employee(Employee, FullTime, LocationA):
+
+	def __init__(self, first_name, last_name):
+		Employee.__init__(self, first_name, last_name)
+		FullTime.__init__(self)
+		LocationA.__init__(self)
 
